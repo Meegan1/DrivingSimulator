@@ -1,0 +1,31 @@
+{
+	"FileVersion": 3,
+	"EngineAssociation": "{5A4746E3-43B4-6460-A653-E4853F442232}",
+	"Category": "",
+	"Description": "",
+	"Modules": [
+		{
+			"Name": "DrivingSimulator",
+			"Type": "Runtime",
+			"LoadingPhase": "Default",
+			"AdditionalDependencies": [
+				"AIModule",
+				"PhysXVehicles"
+			]
+		}
+	],
+	"Plugins": [
+		{
+			"Name": "PhysXVehicles",
+			"Enabled": true
+		},
+		{
+			"Name": "RawInput",
+			"Enabled": true
+		},
+		{
+			"Name": "RiderLink",
+			"Enabled": true
+		}
+	]
+}
