@@ -10,7 +10,9 @@
 			"LoadingPhase": "Default",
 			"AdditionalDependencies": [
 				"AIModule",
-				"PhysXVehicles"
+				"PhysXVehicles",
+				"Engine",
+				"Blutility"
 			]
 		}
 	],
