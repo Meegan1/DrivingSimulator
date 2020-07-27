@@ -15,6 +15,8 @@ public class DrivingSimulator : ModuleRules
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "PhysXVehicles", "HeadMountedDisplay", "Boost" });
+		
+		PrivateDependencyModuleNames.Add("UnrealEd");
 
 		PublicDefinitions.Add("HMD_MODULE_INCLUDED=1");
 		bUseRTTI = true;

@@ -38,7 +38,7 @@ const FName ADrivingSimulatorPawn::EngineAudioRPM("RPM");
 ADrivingSimulatorPawn::ADrivingSimulatorPawn(const FObjectInitializer& ObjectInitializer) : AWheeledVehicle(ObjectInitializer)
 {
 	// Car mesh
-	static ConstructorHelpers::FObjectFinder<USkeletalMesh> CarMesh(TEXT("/Game/VehicleAdv/Vehicle/Vehicle_SkelMesh.Vehicle_SkelMesh"));
+	static ConstructorHelpers::FObjectFinder<USkeletalMesh> CarMesh(TEXT("/Game/PolygonCity/Meshes/Vehicles_Rigged/SK_Veh_Car_Medium_01.SK_Veh_Car_Medium_01"));
 	GetMesh()->SetSkeletalMesh(CarMesh.Object);
 	
 	static ConstructorHelpers::FClassFinder<UObject> AnimBPClass(TEXT("/Game/VehicleAdv/Vehicle/VehicleAnimationBlueprint"));
@@ -59,20 +59,20 @@ ADrivingSimulatorPawn::ADrivingSimulatorPawn(const FObjectInitializer& ObjectIni
 	// Wheels/Tyres
 	// Setup the wheels
 	Vehicle4W->WheelSetups[0].WheelClass = UDrivingSimulatorWheelFront::StaticClass();
-	Vehicle4W->WheelSetups[0].BoneName = FName("PhysWheel_FL");
-	Vehicle4W->WheelSetups[0].AdditionalOffset = FVector(0.f, -8.f, 0.f);
+	Vehicle4W->WheelSetups[0].BoneName = FName("Wheel_fl");
+	Vehicle4W->WheelSetups[0].AdditionalOffset = FVector(0.f, 0.f, 0.f);
 
 	Vehicle4W->WheelSetups[1].WheelClass = UDrivingSimulatorWheelFront::StaticClass();
-	Vehicle4W->WheelSetups[1].BoneName = FName("PhysWheel_FR");
-	Vehicle4W->WheelSetups[1].AdditionalOffset = FVector(0.f, 8.f, 0.f);
+	Vehicle4W->WheelSetups[1].BoneName = FName("Wheel_fr");
+	Vehicle4W->WheelSetups[1].AdditionalOffset = FVector(0.f, 0.f, 0.f);
 
 	Vehicle4W->WheelSetups[2].WheelClass = UDrivingSimulatorWheelRear::StaticClass();
-	Vehicle4W->WheelSetups[2].BoneName = FName("PhysWheel_BL");
-	Vehicle4W->WheelSetups[2].AdditionalOffset = FVector(0.f, -8.f, 0.f);
+	Vehicle4W->WheelSetups[2].BoneName = FName("Wheel_rl");
+	Vehicle4W->WheelSetups[2].AdditionalOffset = FVector(0.f, 0.f, 0.f);
 
 	Vehicle4W->WheelSetups[3].WheelClass = UDrivingSimulatorWheelRear::StaticClass();
-	Vehicle4W->WheelSetups[3].BoneName = FName("PhysWheel_BR");
-	Vehicle4W->WheelSetups[3].AdditionalOffset = FVector(0.f, 8.f, 0.f);
+	Vehicle4W->WheelSetups[3].BoneName = FName("Wheel_rr");
+	Vehicle4W->WheelSetups[3].AdditionalOffset = FVector(0.f, 0.f, 0.f);
 
 	// Adjust the tire loading
 	Vehicle4W->MinNormalizedTireLoad = 0.0f;
@@ -111,7 +111,7 @@ ADrivingSimulatorPawn::ADrivingSimulatorPawn(const FObjectInitializer& ObjectIni
 	UPrimitiveComponent* UpdatedPrimitive = Cast<UPrimitiveComponent>(Vehicle4W->UpdatedComponent);
 	if (UpdatedPrimitive)
 	{
-		UpdatedPrimitive->BodyInstance.COMNudge = FVector(8.0f, 0.0f, 0.0f);
+		UpdatedPrimitive->BodyInstance.COMNudge = FVector(0.0f, 0.0f, 0.0f);
 	}
 
 	// Set the inertia scale. This controls how the mass of the vehicle is distributed.
@@ -122,7 +122,7 @@ ADrivingSimulatorPawn::ADrivingSimulatorPawn(const FObjectInitializer& ObjectIni
 	SpringArm->SetRelativeLocation(FVector(0.0f, 0.0f, 34.0f));
 	SpringArm->SetWorldRotation(FRotator(-20.0f, 0.0f, 0.0f));
 	SpringArm->SetupAttachment(RootComponent);
-	SpringArm->TargetArmLength = 125.0f;
+	SpringArm->TargetArmLength = 500.0f;
 	SpringArm->bEnableCameraLag = false;
 	SpringArm->bEnableCameraRotationLag = false;
 	SpringArm->bInheritPitch = true;

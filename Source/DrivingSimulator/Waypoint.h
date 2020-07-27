@@ -23,5 +23,9 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+	virtual void PostEditImport() override;
+	
+	UPROPERTY(EditAnywhere)
+	TArray<AWaypoint*> Connections;
 
 };

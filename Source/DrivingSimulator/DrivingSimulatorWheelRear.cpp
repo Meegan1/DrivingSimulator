@@ -6,8 +6,8 @@
 
 UDrivingSimulatorWheelRear::UDrivingSimulatorWheelRear()
 {
-	ShapeRadius = 18.0f;
-	ShapeWidth = 15.0f;
+	ShapeRadius = 40.0f;
+	ShapeWidth = 30.0f;
 	bAffectedByHandbrake = true;
 	SteerAngle = 0.f;
 

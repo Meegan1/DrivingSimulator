@@ -25,3 +25,9 @@ void AWaypoint::Tick(float DeltaTime)
 
 }
 
+// Called when duplicated
+void AWaypoint::PostEditImport()
+{
+	Connections.Empty();
+}
+

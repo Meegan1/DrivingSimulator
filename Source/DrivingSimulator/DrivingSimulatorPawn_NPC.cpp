@@ -6,6 +6,7 @@
 
 #include "VehicleMovement_AI.h"
 #include "Vehicle_AI.h"
+#include "UObject/ConstructorHelpers.h"
 
 void ADrivingSimulatorPawn_NPC::BeginPlay()
 {

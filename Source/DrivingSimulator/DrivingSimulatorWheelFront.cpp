@@ -6,8 +6,8 @@
 
 UDrivingSimulatorWheelFront::UDrivingSimulatorWheelFront()
 {
-	ShapeRadius = 18.f;
-	ShapeWidth = 15.0f;
+	ShapeRadius = 40.f;
+	ShapeWidth = 30.0f;
 	bAffectedByHandbrake = false;
 	SteerAngle = 40.f;
 
