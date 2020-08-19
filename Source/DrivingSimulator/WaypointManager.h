@@ -29,16 +29,23 @@ class DRIVINGSIMULATOR_API AWaypointManager : public ATickingEditorUtilityActor
 {
 	GENERATED_BODY()
 
-private:
-	UFUNCTION(CallInEditor)
+protected:
+	virtual void BeginPlay() override;
+public:
+	UFUNCTION(CallInEditor, Category="Waypoint Graph")
 	void AddWaypoint();
-	UFUNCTION(CallInEditor)
+	UFUNCTION(CallInEditor, Category="Waypoint Graph")
 	void ReloadGraph();
-	UFUNCTION(CallInEditor)
+	UFUNCTION(CallInEditor, Category="Waypoint Graph")
+	void ReloadWaypoints();
+	UFUNCTION(CallInEditor, Category="Waypoint Graph")
 	void SelectRandomWaypoint();
 
 	UFUNCTION(BlueprintCallable)
 	AWaypoint* GetRandomWaypoint();
+	
+	UFUNCTION(BlueprintCallable)
+	AWaypoint* GetNextWaypoint(AWaypoint* Waypoint);
 
 	Graph WaypointsGraph;
 public:
@@ -48,5 +55,9 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	TArray<AWaypoint*> Waypoints;
-
+	
+	UPROPERTY(EditAnywhere, Category="Waypoint Graph")
+	bool ShowGraphUI = true;
+	UPROPERTY(EditAnywhere, Category="Waypoint Graph")
+	bool ShowWaypointSpheres = false;
 };

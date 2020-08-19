@@ -27,5 +27,4 @@ public:
 	
 	UPROPERTY(EditAnywhere)
 	TArray<AWaypoint*> Connections;
-
 };

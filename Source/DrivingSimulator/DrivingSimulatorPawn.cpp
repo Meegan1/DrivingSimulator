@@ -41,7 +41,7 @@ ADrivingSimulatorPawn::ADrivingSimulatorPawn(const FObjectInitializer& ObjectIni
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> CarMesh(TEXT("/Game/PolygonCity/Meshes/Vehicles_Rigged/SK_Veh_Car_Medium_01.SK_Veh_Car_Medium_01"));
 	GetMesh()->SetSkeletalMesh(CarMesh.Object);
 	
-	static ConstructorHelpers::FClassFinder<UObject> AnimBPClass(TEXT("/Game/VehicleAdv/Vehicle/VehicleAnimationBlueprint"));
+	static ConstructorHelpers::FClassFinder<UObject> AnimBPClass(TEXT("/Game/VehicleAdv/Vehicle/VehicleAnimationBlueprint_POLYGON"));
 	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
 	GetMesh()->SetAnimInstanceClass(AnimBPClass.Class);
 
@@ -73,6 +73,10 @@ ADrivingSimulatorPawn::ADrivingSimulatorPawn(const FObjectInitializer& ObjectIni
 	Vehicle4W->WheelSetups[3].WheelClass = UDrivingSimulatorWheelRear::StaticClass();
 	Vehicle4W->WheelSetups[3].BoneName = FName("Wheel_rr");
 	Vehicle4W->WheelSetups[3].AdditionalOffset = FVector(0.f, 0.f, 0.f);
+
+	// Adjust Chassis width/height
+	Vehicle4W->ChassisWidth = 200.0f;
+	Vehicle4W->ChassisHeight = 190.0f;
 
 	// Adjust the tire loading
 	Vehicle4W->MinNormalizedTireLoad = 0.0f;
@@ -138,7 +142,7 @@ ADrivingSimulatorPawn::ADrivingSimulatorPawn(const FObjectInitializer& ObjectIni
 	Camera->FieldOfView = 90.f;
 
 	// Create In-Car camera component 
-	InternalCameraOrigin = FVector(-34.0f, -10.0f, 50.0f);
+	InternalCameraOrigin = FVector(10.0f, -45.0f, 145.0f);
 	InternalCameraBase = CreateDefaultSubobject<USceneComponent>(TEXT("InternalCameraBase"));
 	InternalCameraBase->SetRelativeLocation(InternalCameraOrigin);
 	InternalCameraBase->SetupAttachment(GetMesh());
@@ -302,6 +306,12 @@ void ADrivingSimulatorPawn::BeginPlay()
 	EnableIncarView(bWantInCar);
 	// Start an engine sound playing
 	EngineSoundComponent->Play();
+
+	// Set starting waypoint
+	CurrentWaypoint = StartingWaypoint;
+
+	// Set center of mass to beneath vehicle to prevent flipping
+	GetMesh()->SetCenterOfMass(FVector(0.0f, 0.0f, -50.0f));
 }
 
 void ADrivingSimulatorPawn::OnResetVR()
@@ -335,6 +345,12 @@ void ADrivingSimulatorPawn::UpdateHUDStrings()
 		GearDisplayString = (Gear == 0) ? LOCTEXT("N", "N") : FText::AsNumber(Gear);
 	}
 
+}
+
+AWaypoint* ADrivingSimulatorPawn::GetNextWaypoint()
+{
+	CurrentWaypoint = WaypointManager->GetNextWaypoint(CurrentWaypoint);
+	return CurrentWaypoint;
 }
 
 void ADrivingSimulatorPawn::SetupInCarHUD()

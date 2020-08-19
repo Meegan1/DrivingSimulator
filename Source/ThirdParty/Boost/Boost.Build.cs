@@ -13,10 +13,5 @@ public class Boost : ModuleRules
         bEnableExceptions = true;
         PublicDefinitions.Add("WITH_BOOST_BINDING=1");
         PublicDefinitions.Add("BOOST_DISABLE_ABI_HEADERS=1");
-
-        if (Target.Platform == UnrealTargetPlatform.Win64)
-        {
-            
-        }
     }
 }

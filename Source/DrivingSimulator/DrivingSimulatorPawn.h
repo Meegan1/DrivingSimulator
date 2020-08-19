@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "WaypointManager.h"
 #include "WheeledVehicle.h"
 #include "DrivingSimulatorPawn.generated.h"
 
@@ -144,4 +145,16 @@ public:
 	FORCEINLINE UTextRenderComponent* GetInCarGear() const { return InCarGear; }
 	/** Returns EngineSoundComponent subobject **/
 	FORCEINLINE UAudioComponent* GetEngineSoundComponent() const { return EngineSoundComponent; }
+
+public:
+	UPROPERTY(EditAnywhere)
+	AWaypointManager* WaypointManager;
+
+	UFUNCTION(BlueprintCallable)
+	AWaypoint* GetNextWaypoint();
+
+	UPROPERTY(EditAnywhere)
+	AWaypoint* StartingWaypoint;
+	UPROPERTY(VisibleAnywhere)
+	AWaypoint* CurrentWaypoint;
 };
