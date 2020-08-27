@@ -24,11 +24,11 @@ struct FPIDController
     float ErrorMax;
 
     float ErrorSum;
-    float LastPosition;
+    float LastError;
 
     FPIDController();
 
     FPIDController(float P, float I, float D, float ErrorMin, float ErrorMax);
 
-    float CalcNewInput(float Error, float Position);
+    float CalculateInput(float Error);
 };

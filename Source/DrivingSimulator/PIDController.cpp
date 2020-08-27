@@ -14,10 +14,10 @@ FPIDController::FPIDController(float P, float I, float D, float ErrorMin, float 
     this->ErrorMax = ErrorMax;
 }
 
-float FPIDController::CalcNewInput(float Error, float Position)
+float FPIDController::CalculateInput(float Error)
 {
     ErrorSum = FMath::Clamp(Error + ErrorSum, ErrorMin, ErrorMax);
-    float Input = Error * Proportional + ErrorSum * Integral + Derivative * (LastPosition - Position);
-    LastPosition = Position;
+    float Input = (Error * Proportional) + (ErrorSum * Integral) + (Derivative * (Error - LastError));
+    LastError = Error;
     return Input;
 }

@@ -3,14 +3,17 @@
 
 #include "WaypointManager.h"
 #include "DrawDebugHelpers.h"
+#include "DrivingSimulatorPawn_NPC.h"
 #include "EditorViewportClient.h"
 #include "Editor.h"
-
 
 void AWaypointManager::BeginPlay()
 {
     Super::BeginPlay();
     ReloadGraph();
+
+    if(HasAuthority())
+        SpawnAllNPCVehicles(20);
 }
 
 void AWaypointManager::AddWaypoint()
@@ -22,33 +25,6 @@ void AWaypointManager::AddWaypoint()
 
     // store in array of waypoints
     Waypoints.Add(Waypoint_ptr);
-
-#if UE_EDITOR
-    GEditor->SelectActor(Waypoint_ptr, true, true, true, false);
-    FEditorViewportClient* client = (FEditorViewportClient*) GEditor->GetActiveViewport()->GetClient();
-
-    FCollisionQueryParams RV_TraceParams = FCollisionQueryParams(FName(TEXT("RV_Trace")), true, this);
-    RV_TraceParams.bTraceComplex = true;
-    RV_TraceParams.bReturnPhysicalMaterial = false;
- 
-    //Re-initialize hit info
-    FHitResult RV_Hit(ForceInit);
-
-    FVector CameraLocation = client->GetViewLocation();
-    FVector CameraEnd = CameraLocation + FRotationMatrix(client->GetViewRotation()).GetScaledAxis(EAxis::X).Normalize() * 1500;
-     
-    //call GetWorld() from within an actor extending class
-    GetWorld()->LineTraceSingleByChannel(
-        RV_Hit,        //result
-        CameraLocation,    //start
-        CameraEnd, //end
-        ECC_WorldStatic, //collision channel
-        RV_TraceParams
-    );
-
-    Waypoint_ptr->SetActorLocation(RV_Hit.Location);
- 
-#endif
 }
 
 void AWaypointManager::ReloadGraph()
@@ -131,6 +107,51 @@ AWaypoint* AWaypointManager::GetNextWaypoint(AWaypoint* Waypoint)
     int64 index = FMath::RandRange(0, Waypoint->Connections.Num() - 1);
     
     return Waypoint->Connections[index];
+}
+
+ADrivingSimulatorPawn_NPC* AWaypointManager::SpawnNPCVehicle(AWaypoint* Waypoint)
+{
+    FVector Location = Waypoint->GetActorLocation();
+
+    /*
+     * Calculate vector from the waypoint to the center of all connected waypoints
+     */
+    FVector Direction = FVector::ZeroVector;
+    int ConnectionCount = 0;
+    for(auto* Connection : Waypoint->Connections)
+    {
+        if(Connection == nullptr)
+            continue;
+        
+        Direction += Connection->GetActorLocation();
+        ConnectionCount++;
+    }
+    Direction = (Direction / ConnectionCount) - Waypoint->GetActorLocation();
+    FRotator Rotation = Direction.Rotation();
+
+    FActorSpawnParameters ActorSpawnParameters;
+    ActorSpawnParameters.bDeferConstruction = true;
+    
+    ADrivingSimulatorPawn_NPC* SpawnedVehicle = GetWorld()->SpawnActor<ADrivingSimulatorPawn_NPC>(ADrivingSimulatorPawn_NPC::StaticClass(), Location, Rotation, ActorSpawnParameters);
+    SpawnedVehicle->StartingWaypoint = Waypoint;
+    SpawnedVehicle->WaypointManager = this;
+    SpawnedVehicle->FinishSpawning(SpawnedVehicle->GetTransform());
+
+    SpawnedVehicle->SetFolderPath("SpawnedVehicles");
+
+    return SpawnedVehicle;
+}
+
+void AWaypointManager::SpawnAllNPCVehicles(int Quantity)
+{
+    int CurrentQuantity = 0;
+    const int TotalWaypoints = Waypoints.Num();
+    while(CurrentQuantity < Quantity)
+    {
+        int WaypointIndex = FMath::RandRange(0, TotalWaypoints - 1);
+        SpawnNPCVehicle(Waypoints[WaypointIndex]);
+        CurrentQuantity++;
+    }
 }
 
 AWaypointManager::AWaypointManager() : Super()

@@ -6,6 +6,8 @@
 #include "DrawDebugHelpers.h"
 #include "DrivingSimulatorPawn_NPC.h"
 
+// CSV_DEFINE_CATEGORY(PIDController, true);
+
 void UVehicleMovement_AI::RequestDirectMove(const FVector& MoveVelocity, bool bForceMaxSpeed)
 {
     Super::RequestDirectMove(MoveVelocity, bForceMaxSpeed);
@@ -57,6 +59,8 @@ void UVehicleMovement_AI::AdjustThrottleInput(bool bForceMaxSpeed, FVector Dista
 {
     float ForwardFactor = FVector::DotProduct(Direction, Distance.GetSafeNormal());
     float Input = CalculateThrottleInput(Distance, StartingDistance, ForwardFactor);
+    
+    // CSV_CUSTOM_STAT(PIDController, "Throttle", Input + 1.0f, ECsvCustomStatOp::Set);
 
     const float TURN_AROUND_FACTOR = bTurningAround ? 0.3f : 0.1f;
     if (ForwardFactor < TURN_AROUND_FACTOR && (bForceMaxSpeed || Distance.Size() > 300.f))
@@ -76,6 +80,8 @@ void UVehicleMovement_AI::AdjustSteeringInput(FVector Distance, FVector Directio
     float Error;
     float Input;
     CalculateSteeringInput(Distance, Direction, Error, Input);
+
+    // CSV_CUSTOM_STAT(PIDController, "Steering", Input + 1.0f, ECsvCustomStatOp::Set);
     
     if (bTurningAround)
         SetSteeringInput(Error > 0 ? -1.f : 1.f);
@@ -88,22 +94,21 @@ void UVehicleMovement_AI::AdjustSteeringInput(FVector Distance, FVector Directio
 float UVehicleMovement_AI::CalculateThrottleInput(FVector Distance, FVector StartingDistance, float ForwardFactor)
 {
     float Error = Distance.Size() / StartingDistance.Size() * FMath::Sign(ForwardFactor);
-    float Position = 1 - Error;
 
-    return ThrottleController.CalcNewInput(Error, Position);
+    return ThrottleController.CalculateInput(Error);
 }
 
 void UVehicleMovement_AI::CalculateSteeringInput(FVector Distance, FVector Direction, float& Error, float& Input)
 {
-    float CurrentYaw = ClampYaw(Distance.Rotation().Yaw - Direction.Rotation().Yaw);
+    float CurrentYaw = WrapYaw(Distance.Rotation().Yaw - Direction.Rotation().Yaw);
 
     float SteeringPosition = (-CurrentYaw + 180) / 180;
     Error = 1 - SteeringPosition;
 
-    Input = SteeringController.CalcNewInput(Error, SteeringPosition);
+    Input = SteeringController.CalculateInput(Error);
 }
 
-float UVehicleMovement_AI::ClampYaw(float Yaw)
+float UVehicleMovement_AI::WrapYaw(float Yaw)
 {
     if (Yaw < -180)
         return Yaw += 360;

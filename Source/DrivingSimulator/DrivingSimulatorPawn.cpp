@@ -259,12 +259,6 @@ void ADrivingSimulatorPawn::Tick(float Delta)
 	// Update phsyics material
 	UpdatePhysicsMaterial();
 
-	// Update the strings used in the hud (incar and onscreen)
-	UpdateHUDStrings();
-
-	// Set the string in the incar hud
-	SetupInCarHUD();
-
 	bool bHMDActive = false;
 #if HMD_MODULE_INCLUDED
 	if ((GEngine->XRSystem.IsValid() == true ) && ( (GEngine->XRSystem->IsHeadTrackingAllowed() == true) || (GEngine->IsStereoscopic3D() == true)))

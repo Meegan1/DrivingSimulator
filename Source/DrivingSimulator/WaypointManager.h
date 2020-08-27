@@ -21,6 +21,9 @@ THIRD_PARTY_INCLUDES_END
 typedef boost::directed_graph<AWaypoint*> Graph;
 typedef boost::graph_traits<Graph>::vertex_descriptor vertex_t;
 
+
+class ADrivingSimulatorPawn_NPC;
+
 /**
  * 
  */
@@ -46,6 +49,11 @@ public:
 	
 	UFUNCTION(BlueprintCallable)
 	AWaypoint* GetNextWaypoint(AWaypoint* Waypoint);
+
+	UFUNCTION(BlueprintCallable)
+	ADrivingSimulatorPawn_NPC* SpawnNPCVehicle(AWaypoint* Waypoint);
+
+	void SpawnAllNPCVehicles(int Quantity);
 
 	Graph WaypointsGraph;
 public:

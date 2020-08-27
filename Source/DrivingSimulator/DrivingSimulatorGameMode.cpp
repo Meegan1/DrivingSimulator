@@ -4,20 +4,11 @@
 #include "DrivingSimulatorPawn.h"
 #include "DrivingSimulatorHud.h"
 #include "MyPlayerController.h"
+#include "TrafficControllerPawn.h"
 
 ADrivingSimulatorGameMode::ADrivingSimulatorGameMode()
 {
 	HUDClass = ADrivingSimulatorHud::StaticClass();
 	PlayerControllerClass = AMyPlayerController::StaticClass();
-	DefaultPawnClass = ADrivingSimulatorPawn::StaticClass();
-}
-
-UClass* ADrivingSimulatorGameMode::GetDefaultPawnClassForController_Implementation(AController* InController)
-{
-	AMyPlayerController* PlayerController = Cast<AMyPlayerController>(InController);
-
-	if(PlayerController)
-		return PlayerController->GetPlayerPawnClass();
-
-	return DefaultPawnClass;
+	DefaultPawnClass = ATrafficControllerPawn::StaticClass();
 }
